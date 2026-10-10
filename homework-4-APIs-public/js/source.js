@@ -61,10 +61,8 @@ try {
 
     console.log("News Data:", newsData);
 
-    // Get the first 3 news articles
     const news = (newsData.news || []).slice(0, 3);
 
-    // Find the news cards in HTML
     const newsCards = document.querySelectorAll(".news-card");
 
     console.log("Number of articles:", news.length);
@@ -76,14 +74,11 @@ try {
 
     if (article) {
 
-        // Display news title
         card.querySelector("h3").textContent = article.title;
 
-        // Display publication date
         card.querySelector(".news-published").textContent =
             `Published ${article.published}`;
 
-        // Display news image
         const image = card.querySelector("img");
 
         image.src = article.image;
@@ -123,7 +118,6 @@ try {
         : similarData.results || similarData.similar_games || []
 ).slice(0, 4);
 
-// Find the game cards in HTML
     const gameCards = document.querySelectorAll(".game-card");
 
 gameCards.forEach((card, index) => {
@@ -132,10 +126,8 @@ gameCards.forEach((card, index) => {
 
     if (similarGame) {
 
-        // Display game name
         card.querySelector("h3").textContent = similarGame.name;
 
-        // Display release year and rating
         const spans = card.querySelectorAll(".game-card-meta span");
 
         spans[0].textContent = similarGame.year;
@@ -143,7 +135,6 @@ gameCards.forEach((card, index) => {
         spans[1].textContent =
             formatPercentage(similarGame.rating.mean);
 
-        // Display game image
         const image = card.querySelector("img");
 
         image.src =
@@ -167,7 +158,6 @@ gameCards.forEach((card, index) => {
     console.error("Error loading game:", error);
 }
 
-} // End of load function
+}
 
-// Run the function
 load();
