@@ -45,12 +45,129 @@ try {
     document.querySelector(".game-meta").textContent = `${game.developer} • ${formatYearFromStr(game.release_date)}`;
 
     document.querySelector(".game-genre").textContent = game.genre;
-    
+
+    try {
+    const newsResponse = await fetch(
+        `https://api.gamebrain.co/v1/games/${gameID}/news?api-key=${apiKey}`
+    );
+
+    console.log("News API Status:", newsResponse.status);
+
+    if (!newsResponse.ok) {
+        throw new Error(`News API Error: ${newsResponse.status}`);
+    }
+
+    const newsData = await newsResponse.json();
+
+    console.log("News Data:", newsData);
+
+    // Get the first 3 news articles
+    const news = (newsData.news || []).slice(0, 3);
+
+    // Find the news cards in HTML
+    const newsCards = document.querySelectorAll(".news-card");
+
+    console.log("Number of articles:", news.length);
+    console.log("Number of cards:", newsCards.length);
+
+    newsCards.forEach((card, index) => {
+
+    const article = news[index];
+
+    if (article) {
+
+        // Display news title
+        card.querySelector("h3").textContent = article.title;
+
+        // Display publication date
+        card.querySelector(".news-published").textContent =
+            `Published ${article.published}`;
+
+        // Display news image
+        const image = card.querySelector("img");
+
+        image.src = article.image;
+        image.alt = article.title;
+
+        card.style.display = "";
+
+    } else {
+        card.style.display = "none";
+    }
+
+});
+
+} catch (error) {
+    console.error("Error loading news:", error);
+}
+
+try {
+    const similarResponse = await fetch(
+        `https://api.gamebrain.co/v1/games/${gameID}/similar?api-key=${apiKey}`
+    );
+
+    console.log("Similar Games Status:", similarResponse.status);
+
+    if (!similarResponse.ok) {
+        throw new Error(`Similar Games API Error: ${similarResponse.status}`);
+    }
+
+    const similarData = await similarResponse.json();
+
+    console.log("Similar Games Data:", similarData);
+
+    // Get the first 4 similar games
+    const similarGames = (
+    Array.isArray(similarData)
+        ? similarData
+        : similarData.results || similarData.similar_games || []
+).slice(0, 4);
+
+// Find the game cards in HTML
+    const gameCards = document.querySelectorAll(".game-card");
+
+gameCards.forEach((card, index) => {
+
+    const similarGame = similarGames[index];
+
+    if (similarGame) {
+
+        // Display game name
+        card.querySelector("h3").textContent = similarGame.name;
+
+        // Display release year and rating
+        const spans = card.querySelectorAll(".game-card-meta span");
+
+        spans[0].textContent = similarGame.year;
+
+        spans[1].textContent =
+            formatPercentage(similarGame.rating.mean);
+
+        // Display game image
+        const image = card.querySelector("img");
+
+        image.src =
+            similarGame.screenshots?.[0] || similarGame.image;
+
+        image.alt = similarGame.name;
+
+        card.style.display = "";
+
+    } else {
+        card.style.display = "none";
+    }
+
+});
+
+} catch (error) {
+    console.error("Error loading similar games:", error);
+}
+
 } catch (error) {
     console.error("Error loading game:", error);
 }
-}
+
+} // End of load function
+
+// Run the function
 load();
-
-
-   
